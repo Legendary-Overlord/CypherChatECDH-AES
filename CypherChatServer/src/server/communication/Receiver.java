@@ -40,7 +40,8 @@ public class Receiver {
 							}else if(line.substring(0,2).equals("PM")){
 								String decryptedMsg = connection.decrypt(line.substring(2, line.length()));
 								String[] arr = decryptedMsg.split(":");
-								observer.onPM(arr[1],arr[2]);
+								String fromPM = "PM:" + connection.getSocket().getInetAddress().getHostAddress() + ":" + arr[2];
+								observer.onPM(arr[1],fromPM);
 							}else if(line.equals("CL")){
 								observer.onCLRequest();
 							}else if(line.substring(0,2).equals("DH")){
@@ -49,7 +50,7 @@ public class Receiver {
 							}else{
 								System.out.println("ELSE ON RECEIVER");
 								System.out.println("Line: "+line);
-								String decrypted = connection.decrypt(line);
+								String decrypted = connection.getSocket().getInetAddress().getHostAddress()+":"+connection.decrypt(line);
 								System.out.println(decrypted);
 								observer.onMessageReceived(connection.getId(), decrypted);
 							}

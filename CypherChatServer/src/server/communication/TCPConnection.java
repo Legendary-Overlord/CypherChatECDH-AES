@@ -103,11 +103,8 @@ public class TCPConnection {
 	public void sendPM(String id, String msg){
 		for (Connection connection : connections) {
 			if(connection.getSocket().getInetAddress().getHostAddress().equals(id)){
-				System.out.println("PM to " + id+ "::" + msg);
-				String pmMsg = "PMfrom:" + id + ":" + msg;
-				String encMsg = connection.encrypt(pmMsg);
+				String encMsg = connection.encrypt(msg);
 				connection.getEmitter().sendMessage(encMsg);
-				System.out.println("PM to " + id+ "::" + connection.encrypt(msg));
 				break;
 			}
 		}

@@ -31,13 +31,12 @@ public class ChatController implements OnMessageListener{
 		view.getBtnSend().setOnAction(
 				(event)->{
 					String line = view.getTfMessage().getText();
-					System.out.println(line);
-					System.out.println("Line sent 2 first chars"+line.substring(0,2));
 					if(line.substring(0,2).equals("DI") || line.equals("CL") || line.substring(0,2).equals("DH")){
 						connection.getEmitter().sendMessage(line);
 					}else if(line.substring(0,2).equals("PM")){
 						String subMsg = connection.encrypt(line.substring(2, line.length()));
 						if (subMsg != null) {
+							appendMsg(line);
 							String encryptedMsg = line.substring(0, 2) + subMsg;
 							connection.getEmitter().sendMessage(encryptedMsg);
 						} else {
@@ -64,6 +63,15 @@ public class ChatController implements OnMessageListener{
 	public void closeConnection(){
 		String disMsg = "DI:"+connection.getServerIp();
 		connection.getEmitter().sendMessage(disMsg);
+	}
+
+	public void appendMsg(String ownMsg) {
+		Platform.runLater(
+				() ->{
+					view.getTaMessages().appendText(ownMsg+"\n");
+					System.out.println("ChatController>"+ownMsg);
+				}
+		);
 	}
 
 	@Override
