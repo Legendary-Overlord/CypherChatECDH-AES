@@ -31,12 +31,14 @@ public class ChatController implements OnMessageListener{
 		view.getBtnSend().setOnAction(
 				(event)->{
 					String line = view.getTfMessage().getText();
-					if(line.substring(0,2).equals("DI") || line.equals("CL") || line.substring(0,1).equals("DH")){
+					System.out.println(line);
+					System.out.println("Line sent 2 first chars"+line.substring(0,2));
+					if(line.substring(0,2).equals("DI") || line.equals("CL") || line.substring(0,2).equals("DH")){
 						connection.getEmitter().sendMessage(line);
-					}else if(line.substring(0,1).equals("PM")){
+					}else if(line.substring(0,2).equals("PM")){
 						String subMsg = connection.encrypt(line.substring(2, line.length()));
 						if (subMsg != null) {
-							String encryptedMsg = line.substring(0, 1) + subMsg;
+							String encryptedMsg = line.substring(0, 2) + subMsg;
 							connection.getEmitter().sendMessage(encryptedMsg);
 						} else {
 							closeConnection();
@@ -66,7 +68,9 @@ public class ChatController implements OnMessageListener{
 
 	@Override
 	public void onMessageReceived(String msg) {
+		System.out.println(msg);
 		String decryptedMsg = connection.decrypt(msg);
+		System.out.println(decryptedMsg);
 		Platform.runLater(
 				()->{
 					view.getTaMessages().appendText(decryptedMsg+"\n");

@@ -52,7 +52,6 @@ public class TCPConnection {
 				()->{
 					try {
 						socketDispatcher = new ServerSocket(this.puerto);
-						
 						while(true) {
 							System.out.println("Ready...");
 							Socket socket = socketDispatcher.accept();
@@ -69,8 +68,6 @@ public class TCPConnection {
 							PKCOMM pkcomm = new PKCOMM(connection.getId(), connection.getPublickey().getEncoded());
 							String keyJson = gson.toJson(pkcomm);
 							connection.getEmitter().sendMessage("DH" +keyJson);
-							System.out.println(connection.getPublickey().getAlgorithm());
-							System.out.println(connection.getPublickey().getFormat());
 							System.out.println("Sent Server Key");
 //							sendBroadcast("Client Num: "+connections.size());
 						}
@@ -90,8 +87,10 @@ public class TCPConnection {
 	public void sendBroadcast(String msg) {
 		for(int i=0 ; i<connections.size() ; i++) {
 			Connection connection = connections.get(i);
-			msg = connection.encrypt(msg);
-			connection.getEmitter().sendMessage(msg);
+			System.out.println("BROADCAST MSG: "+msg);
+			String encryptMsg = connection.encrypt(msg);
+			System.out.println("BROADCAST TO:"+connection.getId()+", MSG:"+encryptMsg);
+			connection.getEmitter().sendMessage(encryptMsg);
 		}
 	}
 	public void sendDisconnect(String ip){
@@ -103,8 +102,12 @@ public class TCPConnection {
 	}
 	public void sendPM(String id, String msg){
 		for (Connection connection : connections) {
-			if(connection.getId().equals(id)){
-				connection.getEmitter().sendMessage("PM: "+connection.encrypt(msg));
+			if(connection.getSocket().getInetAddress().getHostAddress().equals(id)){
+				System.out.println("PM to " + id+ "::" + msg);
+				String pmMsg = "PMfrom:" + id + ":" + msg;
+				String encMsg = connection.encrypt(pmMsg);
+				connection.getEmitter().sendMessage(encMsg);
+				System.out.println("PM to " + id+ "::" + connection.encrypt(msg));
 				break;
 			}
 		}

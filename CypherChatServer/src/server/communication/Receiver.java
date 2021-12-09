@@ -47,7 +47,11 @@ public class Receiver {
 								System.out.println("Performing ECDH");
 								observer.onDHExchange(line.substring(2,line.length()));
 							}else{
-								observer.onMessageReceived(connection.getId(), connection.decrypt(line));
+								System.out.println("ELSE ON RECEIVER");
+								System.out.println("Line: "+line);
+								String decrypted = connection.decrypt(line);
+								System.out.println(decrypted);
+								observer.onMessageReceived(connection.getId(), decrypted);
 							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block

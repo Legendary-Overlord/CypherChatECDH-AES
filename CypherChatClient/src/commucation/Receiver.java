@@ -39,7 +39,6 @@ public class Receiver {
 								System.out.println("Receive Server PK");
 								observer.onDH(line);
 							}else{
-
 								observer.onMessageReceived(line);
 							}
 						} catch (IOException e) {
